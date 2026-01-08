@@ -3,13 +3,12 @@ import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.1/firebas
 import { getFirestore, collection, addDoc, getDocs, updateDoc, doc, deleteDoc, query, orderBy, where, limit, serverTimestamp, runTransaction } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-firestore.js";
 
 const firebaseConfig = {
-  apiKey: "AIzaSyBG0_K2diNdCL_u2HVHhAg2rF0n4M8hPW4",
-  authDomain: "pos-a87c1.firebaseapp.com",
-  projectId: "pos-a87c1",
-  storageBucket: "pos-a87c1.firebasestorage.app",
-  messagingSenderId: "16581085506",
-  appId: "1:16581085506:web:16ffa3507fc1adc18220db",
-  measurementId: "G-MD1CDJ6T5E"
+apiKey: "...",
+authDomain: "...",
+projectId: "...",
+storageBucket: "...",
+messagingSenderId: "...",
+appId: "..."
 };
 
 // Initialize Firebase
@@ -3712,3 +3711,4 @@ function applyButtonIcons() {
 }
 try { applyButtonIcons(); } catch (err) { console.error('applyButtonIcons failed at runtime', err); }
 try { initFinanceListeners(); } catch (err) { console.error('initFinanceListeners failed at runtime', err); }
+
