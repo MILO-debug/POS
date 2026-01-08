@@ -88,12 +88,19 @@ Later inside the app, you will define:
 
 # 🗂 Step 5 — Create Firestore collections
 Create the following collections:
+
 products
+
 sales
+
 shifts
+
 employees
+
 lending
+
 expenses
+
 categories
 
 You don’t need to add fields yet — the system will create them when you use it.
@@ -238,5 +245,6 @@ Feel free to:
 
 Open an **Issue** here on GitHub  
 or message me and I’ll gladly assist.
+
 
 
