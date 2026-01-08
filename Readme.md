@@ -17,6 +17,7 @@ No subscriptions • No licenses • You control the data
 ✔️ Automatic total and change  
 ✔️ Receipt history  
 ✔️ Refunds
+
 ✔️ Stock management  
 ✔️ Shift system  
 ✔️ Finance tracking (income, profit, remit, expenses)  
@@ -261,6 +262,7 @@ Feel free to:
 
 Open an **Issue** here on GitHub  
 or message me and I’ll gladly assist.
+
 
 
 
