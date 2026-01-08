@@ -1,0 +1,597 @@
+<!DOCTYPE html>
+<html>
+<link rel="icon" type="image/png" href="/favicon.png">
+
+<head>
+  <title>Simple POS</title>
+  <meta name="theme-color" content="#3498db">
+  <link rel="manifest" href="manifest.json">
+  <link rel="stylesheet" href="style.css">
+  <link rel="icon" type="image/png" href="favicon.png">
+</head>
+
+<body>
+  <header>
+    <div class="nav-bar">
+      <div class="nav-left">
+        <strong>POS Dashboard</strong>
+        <span id="offline-indicator" class="offline-badge" style="display:none">Offline Mode – changes syncing
+          later</span>
+      </div>
+      <div class="nav-center" id="nav-links">
+        <button class="nav-btn" onclick="showPage('salesPage')">Sales</button>
+        <button class="nav-btn" onclick="showPage('receiptsPage')">Receipts</button>
+        <button class="nav-btn" onclick="showPage('cashierPage')">Cashier</button>
+        <button class="nav-btn" onclick="showPage('productsPage')">Stocks</button>
+        <button class="nav-btn" onclick="showPage('remitsPage')">Remits</button>
+        <button class="nav-btn" onclick="showPage('profitsPage')">Profits</button>
+        <button class="nav-btn" onclick="showPage('lendingPage')">Lending</button>
+        <button class="nav-btn" onclick="showPage('financePage')">Finance</button>
+        <button class="nav-btn" onclick="showPage('adminPage')">Admin</button>
+      </div>
+      <div class="nav-right">
+        <button id="theme-toggle" class="theme-toggle" aria-label="toggle theme">🌙</button>
+        <button id="sound-toggle" class="theme-toggle" aria-label="toggle sound">🔊</button>
+        <button id="logout-btn" class="clear-btn" style="display:none">Logout</button>
+        <button id="hamburger" class="hamburger" aria-label="menu">☰</button>
+      </div>
+    </div>
+  </header>
+
+  <div id="loginPage" class="page login-page">
+    <div class="login-container card">
+      <div class="login-header">
+        🔐 LOGIN TO STORE POS
+      </div>
+
+      <div class="login-subtitle">
+        Enter your username and password to continue
+      </div>
+
+      <div class="login-controls">
+        <label class="login-label">Username</label>
+        <input id="login-username" type="text" placeholder="Enter username" />
+
+        <label class="login-label">Password</label>
+        <input id="login-password" type="password" placeholder="Enter password" />
+
+        <label class="remember-label">
+          <input id="remember-me" type="checkbox" />
+          <span>Remember me</span>
+        </label>
+
+        <button id="login-btn" class="checkout-btn login-btn">LOGIN</button>
+      </div>
+
+      <div id="login-error" class="login-error"></div>
+    </div>
+
+  </div>
+
+  <div class="container">
+
+    <h2 id="page-title" class="page-title">Point of Sales</h2>
+
+    <!-- Sales Page -->
+    <div id="salesPage" class="page">
+      <div class="main-layout">
+        <div class="left-panel">
+          <div style="margin-bottom:12px;">
+            <input type="text" id="product-search" placeholder="Search products..." class="search-bar" />
+          </div>
+          <div id="categories"></div>
+          <div id="products"></div>
+        </div>
+
+        <div class="right-panel">
+          <div class="cart-header">
+            <h3>Cart</h3>
+            <div style="display:flex;gap:8px;align-items:center">
+              <button id="clear-cart" class="clear-btn">Clear Cart</button>
+            </div>
+          </div>
+
+          <ul id="cart"></ul>
+
+          <div class="totals">
+            <p>Subtotal: <span id="subtotal">₱0.00</span></p>
+            <label>Discount: <input id="discount" type="number" step="0.01" min="0" /></label>
+            <p>Total: <span id="total">₱0.00</span></p>
+            <label>Cash: <input id="cash" type="number"></label>
+            <p>Change: <span id="change">₱0.00</span></p>
+          </div>
+
+          <button id="checkout" class="primary-checkout-btn">Checkout</button>
+        </div>
+      </div>
+
+      <div class="sales-summary card">
+        <h4>Items Sold Summary</h4>
+        <table class="summary-table">
+          <thead>
+            <tr>
+              <th>Product</th>
+              <th>Unit</th>
+              <th>Sold</th>
+            </tr>
+          </thead>
+          <tbody id="items-sold-tbody"></tbody>
+        </table>
+        <p><strong>Total Income: </strong><span id="total-income">0.00</span></p>
+      </div>
+    </div>
+
+    <!-- Receipts Page -->
+    <div id="receiptsPage" class="page" style="display:none">
+      <h3>Receipts</h3>
+
+      <div class="card filters-card">
+        <div style="display:flex;gap:12px;flex-wrap:wrap;align-items:center">
+          <label>From: <input id="filter-start-date" type="date" /></label>
+          <label>To: <input id="filter-end-date" type="date" /></label>
+
+          <button id="quick-today" class="quick-btn">Today</button>
+          <button id="quick-week" class="quick-btn">This Week</button>
+          <button id="quick-month" class="quick-btn">This Month</button>
+
+          <label style="margin-left:8px">Cashier:
+            <select id="cashier-filter">
+              <option value="all">All Cashiers</option>
+            </select>
+          </label>
+
+          <label style="margin-left:8px">Shift:
+            <select id="shift-filter">
+              <option value="all">All Shifts</option>
+            </select>
+          </label>
+
+          <button id="export-history-csv" class="checkout-btn">Export to CSV</button>
+        </div>
+
+        <div style="margin-top:10px;display:flex;gap:12px;align-items:center">
+          <div><strong>Sales:</strong> <span id="filtered-count">0</span></div>
+          <div><strong>Total Income:</strong> <span id="filtered-income">0.00</span></div>
+        </div>
+      </div>
+
+      <ul id="history-list" style="list-style:none;padding:0;margin:0"></ul>
+      <div id="history-empty" style="color:var(--muted);margin-top:12px;display:none">No sales found</div>
+    </div>
+
+    <!-- Cashier Page -->
+    <div id="cashierPage" class="page" style="display:none">
+      <h3>Cashier</h3>
+      <div class="card">
+        <div style="display:flex;gap:12px;align-items:center">
+          <div style="display:flex;gap:8px;align-items:center">
+            <button id="start-shift-btn-cashier" class="checkout-btn start-shift-btn">Start New Shift</button>
+            <button id="end-shift-btn-cashier" class="remove-btn start-shift-btn" style="margin-left:6px">End
+              Shift</button>
+            <div id="cashier-shift-info" style="margin-left:8px;color:var(--muted)"></div>
+          </div>
+        </div>
+        <p style="margin-top:8px;color:var(--muted)">Start or close shifts from here.</p>
+      </div>
+
+      <div class="card" style="margin-top:12px">
+        <h4>My Shift History</h4>
+        <div id="cashier-my-shifts" style="margin-top:8px;color:var(--muted)">Loading...</div>
+      </div>
+    </div>
+
+    <!-- Products Page -->
+    <div id="productsPage" class="page" style="display:none">
+      <h3>Stocks</h3>
+      <div id="stock-notifications" class="card" style="margin-bottom:12px;display:none">
+        <h4>Notifications</h4>
+        <div id="stock-notifications-list"></div>
+      </div>
+      <div style="display:flex;gap:8px;margin-bottom:12px;flex-wrap:wrap">
+        <button id="add-product-btn" class="checkout-btn">Add New Product</button>
+        <button id="toggle-edit-products" class="remove-btn">Edit Stocks</button>
+        <button id="delete-selected" class="remove-btn" style="display:none">Delete Selected</button>
+      </div>
+
+      <div class="card" style="margin-bottom:16px">
+        <h4>Manage Categories</h4>
+        <div style="display:flex;gap:8px;margin-bottom:12px">
+          <input type="text" id="new-category-name" placeholder="New Category Name" />
+          <button id="add-category-btn" class="checkout-btn" style="margin-top:0;width:auto">Add Category</button>
+        </div>
+        <div id="categories-management-list" style="display:flex;gap:8px;flex-wrap:wrap"></div>
+        <div style="margin-top:12px">
+          <button id="toggle-color-mode" class="quick-btn">Change Colors</button>
+          <span id="color-mode-status" style="margin-left:8px;font-size:13px;color:var(--muted);display:none">Color
+            Selection Mode Active (Click a category to cycle colors)</span>
+        </div>
+      </div>
+
+      <div style="margin-bottom:12px">
+        <input type="text" id="stock-search" placeholder="Search stocks..." class="search-bar" style="width:100%" />
+      </div>
+      <div id="products-edit-list"></div>
+    </div>
+
+    <!-- Admin Page -->
+    <div id="adminPage" class="page" style="display:none">
+      <h3>Admin</h3>
+      <div class="admin-actions">
+        <button id="export-sales" class="checkout-btn">Export Sales (CSV)</button>
+        <button id="start-shift-btn-admin" class="checkout-btn start-shift-btn">Start New Shift</button>
+        <button id="end-shift-btn-admin" class="remove-btn start-shift-btn" style="margin-left:6px">End Shift</button>
+        <button id="clear-sales" class="remove-btn">Clear All Sales</button>
+      </div>
+      <div style="margin-top:12px;color:var(--muted)"><span id="admin-shift-info"></span></div>
+
+      <div class="card" style="margin-top:12px">
+        <h4>Cashier Shift History</h4>
+        <div id="admin-cashier-list" style="display:flex;gap:8px;flex-wrap:wrap"></div>
+        <div id="admin-cashier-shifts" style="margin-top:8px"></div>
+      </div>
+
+      <div class="card" style="margin-top:12px">
+        <h4>Employees</h4>
+        <div id="admin-employees-list" style="margin-top:8px"></div>
+        <div style="margin-top:8px"><button id="admin-add-employee" class="checkout-btn">Add Employee</button></div>
+      </div>
+    </div>
+
+    <!-- Remits Page -->
+    <div id="remitsPage" class="page" style="display:none">
+      <h3>Remits</h3>
+      <div class="card">
+        <h4>Weekly Capital Summary</h4>
+        <div id="remits-list" style="margin-top:8px"></div>
+        <p><strong>This Week's Capital: </strong><span id="weekly-capital">0.00</span></p>
+        <button id="reset-weekly-capital" class="remove-btn">Reset Weekly Capital</button>
+      </div>
+    </div>
+
+    <!-- Profits Page -->
+    <div id="profitsPage" class="page" style="display:none">
+      <h3>Profits</h3>
+      <div class="card">
+        <h4>Weekly Profit Summary</h4>
+        <div id="profits-list" style="margin-top:8px"></div>
+        <p><strong>This Week's Profit: </strong><span id="weekly-profit">0.00</span></p>
+        <button id="reset-weekly-profits" class="remove-btn">Reset Weekly Profits</button>
+      </div>
+    </div>
+
+    <!-- Finance Page -->
+    <div id="financePage" class="page" style="display:none">
+      <h3>Finance Dashboard</h3>
+
+      <div class="card finance-filters">
+        <div style="display:flex;gap:12px;flex-wrap:wrap;align-items:center">
+          <button class="quick-btn fin-preset" data-preset="daily">Daily</button>
+          <button class="quick-btn fin-preset active" data-preset="weekly">Weekly</button>
+          <button class="quick-btn fin-preset" data-preset="monthly">Monthly</button>
+          <button class="quick-btn fin-preset" data-preset="annual">Annual</button>
+
+          <div style="display:flex;gap:8px;align-items:center;margin-left:8px">
+            <label>From: <input id="fin-start-date" type="date" /></label>
+            <label>To: <input id="fin-end-date" type="date" /></label>
+          </div>
+        </div>
+        <div id="fin-range-display" style="margin-top:10px;font-weight:700;color:var(--primary)"></div>
+        <div id="fin-date-warning" style="color:var(--danger);font-size:12px;margin-top:4px;display:none">⚠️ TO date
+          cannot be earlier than FROM date</div>
+      </div>
+
+      <!-- Net Income Section (MOVED TO TOP) -->
+      <div class="card finance-section net-income-section">
+        <div style="display:flex;justify-content:space-between;align-items:center">
+          <h4>💵 Net Income</h4>
+          <span class="net-income-value" id="net-income">₱0.00</span>
+        </div>
+        <p class="net-income-formula">Income − Expenses</p>
+      </div>
+
+      <!-- Income Section -->
+      <div class="card finance-section">
+        <h4>📊 Income</h4>
+        <div class="finance-stats">
+          <div class="stat-item">
+            <span class="stat-label">Total Income:</span>
+            <span id="fin-total-income" class="stat-value">₱0.00</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Remits (Capital) Section -->
+      <div class="card finance-section">
+        <h4>💰 Remits (Capital)</h4>
+        <div id="finance-remits-list" style="margin-top:8px"></div>
+        <p style="margin-top:12px"><strong>Total Capital:</strong> <span id="finance-total-capital">₱0.00</span></p>
+      </div>
+
+      <!-- Profits Section -->
+      <div class="card finance-section">
+        <h4>📈 Profits</h4>
+        <div id="finance-profits-list" style="margin-top:8px"></div>
+        <p style="margin-top:12px"><strong>Total Profit:</strong> <span id="finance-total-profit">₱0.00</span></p>
+      </div>
+
+      <!-- Expenses Section -->
+      <div class="card finance-section">
+        <h4>💸 Expenses</h4>
+        <div style="margin-bottom:12px;display:flex;gap:8px;flex-wrap:wrap;align-items:center">
+          <input id="expense-amount" type="number" step="0.01" placeholder="Amount" style="width:120px" />
+          <input id="expense-reason" type="text" placeholder="Reason/Description" style="width:200px;flex:1" />
+          <button id="add-expense-btn" class="checkout-btn">Add Expense</button>
+        </div>
+        <div id="expenses-list" style="margin-top:12px"></div>
+        <p style="margin-top:12px"><strong>Total Expenses:</strong> <span id="weekly-expenses">₱0.00</span></p>
+        <button id="reset-expenses-btn" class="remove-btn" style="margin-top:8px">Reset Expenses</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Lending Page -->
+  <div id="lendingPage" class="page" style="display:none">
+    <h3>Lending</h3>
+
+    <!-- Lending POS Section -->
+    <div class="main-layout">
+      <div class="left-panel">
+        <h3>Items</h3>
+        <div style="margin-bottom:12px;">
+          <input type="text" id="lending-product-search" placeholder="Search items..." class="search-bar" />
+        </div>
+        <div id="lending-categories"></div>
+        <div id="lending-products"></div>
+      </div>
+
+      <div class="right-panel">
+        <div class="cart-header">
+          <h3>Lending Cart</h3>
+          <div style="display:flex;gap:8px;align-items:center">
+            <button id="clear-lending-cart" class="clear-btn">Clear Cart</button>
+          </div>
+        </div>
+
+        <ul id="lending-cart"></ul>
+
+        <div class="totals">
+          <p>Total: <span id="lending-total">₱0.00</span></p>
+        </div>
+
+        <button id="lend" class="primary-checkout-btn">Lend</button>
+      </div>
+    </div>
+
+    <!-- Borrowers List Section -->
+    <div class="card" style="margin-top:20px">
+      <h4>Borrowers List</h4>
+      <div id="borrowers-list" style="margin-top:8px"></div>
+    </div>
+  </div>
+
+  <!-- Add Product Modal -->
+  <div id="add-product-modal" class="modal hidden" aria-hidden="true">
+    <div class="modal-content">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
+        <h4>Add Product</h4>
+        <button id="add-product-close" class="clear-btn" style="font-size:20px;padding:4px 8px">✖</button>
+      </div>
+      <div class="modal-row">
+        <label>Name: <input id="new-product-name" type="text" /></label>
+      </div>
+      <div class="modal-row">
+        <label>Unit:
+          <select id="new-product-unit">
+            <option value="pcs">pcs</option>
+            <option value="Kg">Kg</option>
+          </select>
+        </label>
+      </div>
+      <div class="modal-row">
+        <label>Category:
+          <select id="new-product-category"></select>
+        </label>
+      </div>
+      <div class="modal-row">
+        <label>Price: <input id="new-product-price" type="number" step="0.01" /></label>
+      </div>
+      <div class="modal-row">
+        <label>Capital: <input id="new-product-capital" type="number" step="0.01" /></label>
+      </div>
+      <div class="modal-row">
+        <label>Profit: <input id="new-product-profit" type="number" step="0.01" /></label>
+      </div>
+      <div class="modal-row">
+        <label>Stock: <input id="new-product-stock" type="number" min="0" /></label>
+      </div>
+      <div class="modal-actions">
+        <button id="add-product-save" class="checkout-btn">Save</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Add Employee Modal -->
+  <div id="add-employee-modal" class="modal hidden" aria-hidden="true">
+    <div class="modal-content">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
+        <h4>Add Employee / User</h4>
+        <button id="add-employee-close" class="clear-btn" style="font-size:20px;padding:4px 8px">✖</button>
+      </div>
+      <div class="modal-row">
+        <label>Full Name: <input id="new-employee-fullname" type="text" /></label>
+      </div>
+      <div class="modal-row">
+        <label>Username: <input id="new-employee-username" type="text" /></label>
+      </div>
+      <div class="modal-row">
+        <label>Password: <input id="new-employee-password" type="password" /></label>
+      </div>
+      <div class="modal-row">
+        <label>Role:
+          <select id="new-employee-role">
+            <option value="cashier">cashier</option>
+            <option value="admin">admin</option>
+          </select>
+        </label>
+      </div>
+      <div class="modal-actions">
+        <button id="add-employee-save" class="checkout-btn">Save</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Weight modal for Kg products (Sales) -->
+  <div id="weight-modal" class="modal hidden" aria-hidden="true">
+    <div class="modal-content">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
+        <h4 id="modal-product-name">Add weight</h4>
+        <button id="weight-modal-close" class="clear-btn" style="font-size:20px;padding:4px 8px">✖</button>
+      </div>
+      <p>Price: <span id="modal-price">0</span> per Kg</p>
+
+      <div class="modal-row">
+        <label>Weight (Kg): <input id="modal-weight" type="number" step="0.01" min="0" /></label>
+      </div>
+
+      <div class="modal-row">
+        <label>Amount: <input id="modal-amount" type="number" step="0.01" min="0" /></label>
+      </div>
+
+      <div class="modal-actions">
+        <button id="modal-add" class="checkout-btn">Add</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Weight modal for Kg products (Lending) -->
+  <div id="lending-weight-modal" class="modal hidden" aria-hidden="true">
+    <div class="modal-content">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
+        <h4 id="lending-modal-product-name">Add weight</h4>
+        <button id="lending-weight-modal-close" class="clear-btn" style="font-size:20px;padding:4px 8px">✖</button>
+      </div>
+      <p>Price: <span id="lending-modal-price">0</span> per Kg</p>
+
+      <div class="modal-row">
+        <label>Weight (Kg): <input id="lending-modal-weight" type="number" step="0.01" min="0" /></label>
+      </div>
+
+      <div class="modal-row">
+        <label>Amount: <input id="lending-modal-amount" type="number" step="0.01" min="0" /></label>
+      </div>
+
+      <div class="modal-actions">
+        <button id="lending-modal-add" class="checkout-btn">Add</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Receipt modal (shown on Checkout) -->
+  <div id="receipt-modal" class="modal hidden" aria-hidden="true">
+    <div class="modal-content">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
+        <h3>Receipt Preview</h3>
+        <button id="receipt-close" class="clear-btn" style="font-size:20px;padding:4px 8px">✖</button>
+      </div>
+      <div id="receipt-datetime" class="modal-row" style="color:#666;font-size:13px"></div>
+      <div id="receipt-cashier" class="modal-row" style="color:#666;font-size:13px"></div>
+      <div class="modal-row">
+        <ul id="receipt-items" style="list-style:none;padding:0;margin:0;max-height:220px;overflow:auto"></ul>
+      </div>
+
+      <div class="modal-row">
+        <p>Subtotal: <strong><span id="receipt-subtotal">0.00</span></strong></p>
+        <p>Discount: <strong><span id="receipt-discount">0.00</span></strong></p>
+        <p>Total: <strong><span id="receipt-total">0.00</span></strong></p>
+      </div>
+
+      <div class="modal-row">
+        <label>Cash: <input id="receipt-cash" type="number" step="0.01" min="0" /></label>
+        <p style="margin-top:8px">Change: <strong><span id="receipt-change">0.00</span></strong></p>
+      </div>
+
+      <div class="modal-actions">
+        <button id="receipt-save" class="checkout-btn">Add to Sales</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Error modal for insufficient cash -->
+  <div id="error-modal" class="modal hidden" aria-hidden="true">
+    <div class="modal-content">
+      <h4>⚠️ Warning!</h4>
+      <div id="error-modal-message" style="color:var(--danger);margin:8px 0">Cannot proceed to checkout. Cash Payment
+        isn't enough</div>
+      <div class="modal-actions">
+        <button id="error-ok" class="clear-btn">OK</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Borrower Name Modal for Lending -->
+  <div id="borrower-modal" class="modal hidden" aria-hidden="true">
+    <div class="modal-content">
+      <h4>Enter Borrower Name</h4>
+      <div class="modal-row">
+        <label>Borrower Name: <input id="borrower-name" type="text" placeholder="Enter borrower's name" /></label>
+      </div>
+      <div class="modal-actions">
+        <button id="borrower-cancel" class="clear-btn">Cancel</button>
+        <button id="borrower-confirm" class="checkout-btn">Confirm Lend</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Lending Details Modal -->
+  <div id="lending-details-modal" class="modal hidden" aria-hidden="true">
+    <div class="modal-content" id="lending-details-content">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
+        <h4>Borrower: <span id="lending-details-name"></span></h4>
+        <button id="lending-details-close" class="clear-btn" style="font-size:20px;padding:4px 8px">✖</button>
+      </div>
+      <div class="modal-row">
+        <p>Outstanding Balance: <strong><span id="lending-details-balance">0.00</span></strong></p>
+      </div>
+      <div id="lending-details-entries-container"
+        style="max-height:300px;overflow:auto;margin:10px 0;border:1px solid var(--border);border-radius:8px;padding:8px">
+        <!-- Entries will be populated here -->
+      </div>
+      <div class="modal-actions">
+        <button id="lending-details-full-payment" class="checkout-btn">Full Payment</button>
+        <button id="lending-details-partial-payment" class="checkout-btn">Partial Payment</button>
+      </div>
+    </div>
+  </div>
+
+
+  <script type="module" src="app.js"></script>
+  <script>
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('/service-worker.js')
+          .then(reg => console.log('SW registered!', reg))
+          .catch(err => console.log('SW registration failed!', err));
+      });
+    }
+
+    // Connectivity monitoring
+    window.addEventListener('online', () => {
+      const badge = document.getElementById('offline-indicator');
+      if (badge) badge.style.display = 'none';
+      if (window.syncData) window.syncData();
+    });
+    window.addEventListener('offline', () => {
+      const badge = document.getElementById('offline-indicator');
+      if (badge) badge.style.display = 'inline-block';
+    });
+    // Check initial state
+    if (!navigator.onLine) {
+      document.addEventListener('DOMContentLoaded', () => {
+        const badge = document.getElementById('offline-indicator');
+        if (badge) badge.style.display = 'inline-block';
+      });
+    }
+  </script>
+</body>
+
+</html>
