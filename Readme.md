@@ -90,26 +90,56 @@ Later inside the app, you will define:
 Create the following collections:
 
 products
-
 sales
-
 shifts
-
 employees
-
 lending
-
 expenses
-
 categories
 
 
-
-You don’t need to add fields yet — the system will create them when you use it.
+> You do NOT need to create fields right away — the app will generate many automatically while being used.
 
 ---
 
-# 💾 Step 6 — Download / Clone this repository
+# 👤 Step 6 — Create user login accounts (IMPORTANT)
+
+### Create at least one Admin account
+
+Go to:
+
+Firestore → users → Add document
+
+Add fields:
+
+| Field | Type | Example |
+|------|------|--------|
+| username | string | admin |
+| password | string | admin123 |
+| role | string | admin |
+| employeeName | string | Maria Santos |
+
+### Create Cashier accounts the same way
+
+Example:
+
+| Field | Value |
+|------|-------|
+| username | juan01 |
+| password | cashier123 |
+| role | cashier |
+| employeeName | Juan Dela Cruz |
+
+#### Role meanings
+
+| Role | Permissions |
+|------|-------------|
+| admin | full access |
+| cashier | POS, receipts, lending, own shifts |
+
+---
+
+# 💾 Step 7 — Download / Clone this repository
 
 Option A: ZIP download
 
@@ -123,7 +153,7 @@ git clone <your-repository-link>
 
 ---
 
-# ⚙️ Step 7 — Insert your Firebase config
+# ⚙️ Step 8 — Insert your Firebase config
 
 1. Go to Firebase console → Project settings
 2. Scroll to **Your apps**
@@ -145,7 +175,7 @@ appId: "..."
 
 ---
 
-# 🌍 Step 8 — Deploy (make it live)
+# 🌍 Step 9 — Deploy (make it live)
 
 Install Firebase CLI (only once):
 npm install -g firebase-tools
@@ -247,7 +277,5 @@ Feel free to:
 
 Open an **Issue** here on GitHub  
 or message me and I’ll gladly assist.
-
-
 
 
