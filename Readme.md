@@ -103,6 +103,8 @@ expenses
 
 categories
 
+
+
 You don’t need to add fields yet — the system will create them when you use it.
 
 ---
@@ -245,6 +247,7 @@ Feel free to:
 
 Open an **Issue** here on GitHub  
 or message me and I’ll gladly assist.
+
 
 
 
