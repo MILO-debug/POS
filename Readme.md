@@ -184,7 +184,7 @@ firebase deploy
 
 
 Your POS is now live 🎉  
-Firebase will give you a URL like:
+Firebase will give you a URL like: https://yourapp.web.app/
 
 
 ---
@@ -262,6 +262,7 @@ Feel free to:
 
 Open an **Issue** here on GitHub  
 or message me and I’ll gladly assist.
+
 
 
 
