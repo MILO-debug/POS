@@ -87,7 +87,7 @@ categories
 
 Go to:
 
-Firestore → users → Add document
+Firestore Database → users → Add document
 
 Add fields:
 
@@ -260,6 +260,7 @@ Feel free to:
 
 Open an **Issue** here on GitHub  
 or message me and I’ll gladly assist.
+
 
 
 
