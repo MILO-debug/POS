@@ -66,22 +66,16 @@ You **do NOT** need:
 
 Create the following Firestore collections manually:
 
+```
 users
-
 products
-
 sales
-
 shifts
-
 employees
-
 lending
-
 expenses
-
 categories
-
+```
 
 > You do NOT need to create fields right away — the app will generate many automatically while being used.
 
@@ -146,6 +140,7 @@ git clone <your-repository-link>
 4. Register app → continue
 5. Copy the config code:
 
+```javascript
 const firebaseConfig = {
 apiKey: "...",
 authDomain: "...",
@@ -154,6 +149,9 @@ storageBucket: "...",
 messagingSenderId: "...",
 appId: "..."
 };
+```
+
+
 
 6. Open `app.js` (or your config file)
 7. Replace the existing config with your own
@@ -262,6 +260,7 @@ Feel free to:
 
 Open an **Issue** here on GitHub  
 or message me and I’ll gladly assist.
+
 
 
 
