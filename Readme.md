@@ -61,40 +61,24 @@ You **do NOT** need:
 5. Create
 
 ---
+# 📚 Step 3 — Create required collections
 
-# 🔐 Step 3 — Enable Authentication
+Create the following Firestore collections manually:
 
-1. Go to **Authentication**
-2. Click **Get Started**
-3. Choose **Email / Password**
-4. Enable and save
-
----
-
-# 👥 Step 4 — Create first admin account
-
-1. Authentication → **Users**
-2. Click **Add user**
-3. Enter:
-   - email (any)
-   - password
-4. Save
-
-Later inside the app, you will define:
-- role = admin
-- cashier accounts
-
----
-
-# 🗂 Step 5 — Create Firestore collections
-Create the following collections:
+users
 
 products
+
 sales
+
 shifts
+
 employees
+
 lending
+
 expenses
+
 categories
 
 
@@ -102,7 +86,7 @@ categories
 
 ---
 
-# 👤 Step 6 — Create user login accounts (IMPORTANT)
+# 👤 Step 4 — Create user login accounts (IMPORTANT)
 
 ### Create at least one Admin account
 
@@ -139,7 +123,7 @@ Example:
 
 ---
 
-# 💾 Step 7 — Download / Clone this repository
+# 💾 Step 5 — Download / Clone this repository
 
 Option A: ZIP download
 
@@ -153,7 +137,7 @@ git clone <your-repository-link>
 
 ---
 
-# ⚙️ Step 8 — Insert your Firebase config
+# ⚙️ Step 6 — Insert your Firebase config
 
 1. Go to Firebase console → Project settings
 2. Scroll to **Your apps**
@@ -175,7 +159,7 @@ appId: "..."
 
 ---
 
-# 🌍 Step 9 — Deploy (make it live)
+# 🌍 Step 7 — Deploy (make it live)
 
 Install Firebase CLI (only once):
 npm install -g firebase-tools
@@ -204,7 +188,7 @@ Firebase will give you a URL like:
 
 ---
 
-# 🧪 Step 9 — First run
+# 🧪 Step 8 — First run
 
 Login using the account you created earlier
 
