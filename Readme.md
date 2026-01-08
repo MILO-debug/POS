@@ -16,7 +16,7 @@ No subscriptions • No licenses • You control the data
 ✔️ Discount per checkout  
 ✔️ Automatic total and change  
 ✔️ Receipt history  
-✔️ Refunds
+✔️ Refund receipt  
 ✔️ Stock management  
 ✔️ Shift system  
 ✔️ Finance tracking (income, profit, remit, expenses)  
