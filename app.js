@@ -1,6 +1,6 @@
 // app.js - Point of Sale Application
 import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-app.js";
-import { getFirestore, collection, addDoc, getDocs, updateDoc, doc, deleteDoc, query, orderBy, where, limit, serverTimestamp, runTransaction } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-firestore.js";
+import { getFirestore, collection, addDoc, getDocs, getDoc, updateDoc, doc, deleteDoc, query, orderBy, where, limit, serverTimestamp, runTransaction, writeBatch } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-firestore.js";
 
 const firebaseConfig = {
 apiKey: "...",
@@ -2334,14 +2334,14 @@ async function loadSalesHistory() {
     rightDiv.appendChild(totalStrong);
 
     if (currentUserRole === 'admin') {
-      const deleteBtn = document.createElement('button');
-      deleteBtn.className = 'remove-btn';
-      deleteBtn.innerText = 'Delete';
-      deleteBtn.onclick = (event) => {
+      const refundBtn = document.createElement('button');
+      refundBtn.className = 'remove-btn';
+      refundBtn.innerText = 'Refund';
+      refundBtn.onclick = (event) => {
         event.stopPropagation();
-        deleteSale(docSnap.id);
+        handleRefund(docSnap.id);
       };
-      rightDiv.appendChild(deleteBtn);
+      rightDiv.appendChild(refundBtn);
     }
 
     const mainDiv = document.createElement('div');
@@ -2368,25 +2368,87 @@ function openSavedReceiptModal(sale) {
   openReceiptModal(sale);
 }
 
-async function deleteSale(saleId) {
-  if (!confirm('Are you sure you want to delete this sale? This action cannot be undone.')) return;
+async function handleRefund(saleId) {
+  if (!confirm('Refund this receipt? Items will be returned to stock.')) return;
 
   try {
-    await safeWrite('delete', 'sales', null, saleId);
-    alert('Sale deleted successfully.');
+    const saleRef = doc(db, 'sales', saleId);
+    const saleSnap = await getDoc(saleRef);
+
+    if (!saleSnap.exists()) {
+      alert('Sale record not found.');
+      return;
+    }
+
+    const saleData = saleSnap.data();
+    const items = saleData.items || [];
+
+    // Use a batch for atomic updates
+    const batch = writeBatch(db);
+
+    // 1. Prepare stock restoration
+    // We need to fetch current product data to be sure we have the latest stock, 
+    // but the app already maintains a 'products' array. 
+    // However, for consistency and safety, we should fetch fresh or use transaction.
+    // Given the 'safeWrite' pattern, a batch is better if online.
+
+    for (const item of items) {
+      // Find product by name and unit (as done in sale logic)
+      const product = products.find(p => p.name === item.name && p.unit === item.unit);
+      if (product) {
+        let restoreAmount = 0;
+        if (item.unit && item.unit.toLowerCase() === 'kg') {
+          restoreAmount = Number(item.weight || 0);
+        } else {
+          restoreAmount = Number(item.qty || 0);
+        }
+
+        const productRef = doc(db, 'products', product.id);
+        // Note: We use the locally cached product.stock for the base, 
+        // but it's safer to use the database value.
+        // For simplicity and matching existing patterns:
+        const newStock = Number((Number(product.stock || 0) + restoreAmount).toFixed(2));
+        batch.update(productRef, { stock: newStock });
+        product.stock = newStock; // Update local cache
+      }
+    }
+
+    // 2. Prepare shift total update if possible
+    if (saleData.shiftId) {
+      const shiftRef = doc(db, 'shifts', saleData.shiftId);
+      const shiftSnap = await getDoc(shiftRef);
+      if (shiftSnap.exists()) {
+        const shiftData = shiftSnap.data();
+        const currentTotal = Number(shiftData.totalIncome || shiftData.totalSales || 0);
+        const newShiftTotal = Number((currentTotal - Number(saleData.total || 0)).toFixed(2));
+        batch.update(shiftRef, { totalIncome: newShiftTotal });
+        if (currentShift && currentShift.id === saleData.shiftId) {
+          currentShift.totalIncome = newShiftTotal;
+        }
+      }
+    }
+
+    // 3. Delete the sale record
+    batch.delete(saleRef);
+
+    // Commit the batch
+    await batch.commit();
+
+    alert('Refund processed successfully. Stocks restored.');
+
     // Refresh history and summary
     loadSalesHistory();
     loadSalesSummary();
-    // Update shift UI if needed
     updateShiftUI();
+    loadProducts(); // Fresh fetch of products
   } catch (err) {
-    console.error('Failed to delete sale', err);
-    alert('Failed to delete sale. Check console for details.');
+    console.error('Refund failed', err);
+    alert('Failed to process refund. Check console for details.');
   }
 }
 
-// Make deleteSale available globally for any inline onclick handlers
-window.deleteSale = deleteSale;
+// Make handleRefund available globally
+window.handleRefund = handleRefund;
 
 // products editor
 let productsEditMode = false;
@@ -3711,4 +3773,3 @@ function applyButtonIcons() {
 }
 try { applyButtonIcons(); } catch (err) { console.error('applyButtonIcons failed at runtime', err); }
 try { initFinanceListeners(); } catch (err) { console.error('initFinanceListeners failed at runtime', err); }
-
