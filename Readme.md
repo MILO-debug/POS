@@ -35,6 +35,7 @@ To install this system you need:
 - Basic copy-paste ability 😊
 
 You **do NOT** need:
+
 ✖️ programming experience  
 ✖️ a paid hosting plan  
 ✖️ your own server  
@@ -261,5 +262,6 @@ Feel free to:
 
 Open an **Issue** here on GitHub  
 or message me and I’ll gladly assist.
+
 
 
