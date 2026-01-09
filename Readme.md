@@ -168,7 +168,7 @@ Login:
 firebase login
 
 Initialize project inside folder:
-firebase init
+firebase init hosting
 
 Choose:
 
@@ -270,6 +270,7 @@ helped you. Please consider donating so I will be motivated to continue improvin
 Gcash #: 0938-348-3562
 
 Thank you for your support!
+
 
 
 
