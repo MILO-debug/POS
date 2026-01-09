@@ -262,6 +262,15 @@ Feel free to:
 Open an **Issue** here on GitHub  
 or message me and I’ll gladly assist.
 
+---
+# 🍵 Support The Developer
+It took me a lot of time and effort to develop this project if you like my work and this project
+helped you. Please consider donating so I will be motivated to continue improving this project. 
+
+Gcash #: 0938-348-3562
+
+Thank you for your support!
+
 
 
 
