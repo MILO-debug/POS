@@ -2,13 +2,16 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-app.js";
 import { getFirestore, collection, addDoc, getDocs, getDoc, updateDoc, doc, deleteDoc, query, orderBy, where, limit, serverTimestamp, runTransaction, writeBatch } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-firestore.js";
 
+
+// PASTE YOUR OWN FIREBASE PROJECT CONFIGURATION HERE! 
 const firebaseConfig = {
-apiKey: "...",
-authDomain: "...",
-projectId: "...",
-storageBucket: "...",
-messagingSenderId: "...",
-appId: "..."
+  apiKey: "AIzaSyBG0_K2diNdCL_u2HVHhAg2rF0n4M8hPW4",
+  authDomain: "pos-a87c1.firebaseapp.com",
+  projectId: "pos-a87c1",
+  storageBucket: "pos-a87c1.firebasestorage.app",
+  messagingSenderId: "16581085506",
+  appId: "1:16581085506:web:16ffa3507fc1adc18220db",
+  measurementId: "G-MD1CDJ6T5E"
 };
 
 // Initialize Firebase
@@ -3515,7 +3518,7 @@ if (lendingFullBtn) lendingFullBtn.onclick = () => {
 const lendingPartialBtn = document.getElementById('lending-details-partial-payment');
 if (lendingPartialBtn) lendingPartialBtn.onclick = () => {
   const name = document.getElementById('lending-details-name').innerText;
-  partialPayment(name);
+  openPaymentModal(name);
 };
 
 // Make showBorrowerDetails globally accessible for HTML onclick
@@ -3571,6 +3574,12 @@ function openPaymentModal(borrowerName) {
       checkbox.dataset.lendingId = entry.lendingId;
       checkbox.dataset.itemIndex = entry.itemIndex;
       checkbox.dataset.amount = item.total;
+      checkbox.onchange = () => {
+        const allChecked = itemsEl.querySelectorAll('input[type="checkbox"]:checked');
+        let sum = 0;
+        allChecked.forEach(c => sum += Number(c.dataset.amount || 0));
+        amountInput.value = sum > 0 ? sum.toFixed(2) : '';
+      };
 
       const label = document.createElement('label');
       const qtyStr = item.unit && item.unit.toLowerCase() === 'kg' ? `${Number(item.weight).toFixed(2)}kg` : `x${item.qty}`;
@@ -3604,18 +3613,7 @@ function fullPayment(borrowerName) {
 }
 
 function partialPayment(borrowerName) {
-  const unpaid = Number(document.getElementById('lending-details-balance').innerText.replace('₱', '').replace(',', ''));
-  const payAmount = Number(prompt('Enter partial payment amount', ''));
-  if (isNaN(payAmount) || payAmount <= 0) {
-    alert('Invalid amount');
-    return;
-  }
-  if (payAmount > unpaid) {
-    alert('Payment amount cannot exceed unpaid balance');
-    return;
-  }
-  if (!confirm(`Pay ${formatCurrency(payAmount)}?`)) return;
-  processPayment(borrowerName, payAmount, false);
+  openPaymentModal(borrowerName);
 }
 
 async function processPayment(borrowerName, amount, isFull, selectedItems = []) {
@@ -3704,6 +3702,7 @@ async function processPayment(borrowerName, amount, isFull, selectedItems = []) 
 
     alert('Payment recorded successfully!');
     closePaymentModal();
+    closeLendingDetailsModal();
     loadBorrowersList();
     loadSalesSummary();
     updateShiftUI();
@@ -3723,10 +3722,23 @@ if (paymentFull) paymentFull.onclick = () => {
   fullPayment(borrowerName);
 };
 
-const paymentPartial = document.getElementById('payment-partial');
-if (paymentPartial) paymentPartial.onclick = () => {
-  const borrowerName = document.getElementById('payment-borrower-name').innerText;
-  partialPayment(borrowerName);
+const paymentConfirm = document.getElementById('payment-confirm');
+if (paymentConfirm) paymentConfirm.onclick = () => {
+  const name = document.getElementById('payment-borrower-name').innerText;
+  const amount = Number(document.getElementById('payment-amount').value);
+  const container = document.getElementById('payment-items');
+  if (!container) return;
+  const checks = container.querySelectorAll('input[type="checkbox"]:checked');
+  const selectedItems = Array.from(checks).map(c => ({
+    lendingId: c.dataset.lendingId,
+    itemIndex: Number(c.dataset.itemIndex)
+  }));
+
+  if (isNaN(amount) || amount <= 0) {
+    return alert('Please enter a valid payment amount');
+  }
+  if (!confirm(`Confirm payment of ${formatCurrency(amount)}?`)) return;
+  processPayment(name, amount, false, selectedItems);
 };
 
 
