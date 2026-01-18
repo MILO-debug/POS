@@ -159,6 +159,27 @@ appId: "..."
 
 ---
 
+# 🗒️ Step 6 — Adjust Database Rules
+
+1. Go to Firestore Database
+2. Select "Rules" Tab
+3. Paste the config code:
+
+```javascript
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+    match /{document=**} {
+      allow read, write: if true;
+    }
+  }
+}
+```
+4. Click "Publish"
+
+---
+
 # 🌍 Step 7 — Deploy (make it live)
 
 Install Firebase CLI (only once):
@@ -270,6 +291,7 @@ helped you. Please consider donating so I will be motivated to continue improvin
 Gcash #: 0938-348-3562
 
 Thank you for your support!
+
 
 
 
