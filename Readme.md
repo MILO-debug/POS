@@ -130,6 +130,10 @@ Option B: Git
 
 git clone <your-repository-link>
 
+Option C
+
+Releases -> Download pos-app.zip
+
 
 ---
 
@@ -182,17 +186,22 @@ service cloud.firestore {
 
 # 🌍 Step 7 — Deploy (make it live)
 
+Open the extracted folder "pos-app". Open terminal inside the folder.
+
+Hint: (For Windows)
+Hold shift then right click to open Terminal
+
+Follow the steps: (copy paste terminal commands)
 Install Firebase CLI (only once):
-npm install -g firebase-tools
+```npm install -g firebase-tools```
 
 Login:
-firebase login
+```firebase login```
 
 Initialize project inside folder:
-firebase init hosting
+```firebase init hosting```
 
 Choose:
-
 - Hosting
 - Use existing project → select your Firebase project
 - Public folder: `public`  (or folder where `index.html` is)
@@ -200,8 +209,7 @@ Choose:
 - Overwrite index.html → **no**
 
 Deploy:
-firebase deploy
-
+```firebase deploy```
 
 Your POS is now live 🎉  
 Firebase will give you a URL like: https://yourapp.web.app/
@@ -291,6 +299,7 @@ helped you. Please consider donating so I will be motivated to continue improvin
 Gcash #: 0938-348-3562
 
 Thank you for your support!
+
 
 
 
