@@ -192,6 +192,8 @@ Hint: (For Windows)
 Hold shift then right click to open Terminal
 
 Follow the steps: (copy paste terminal commands)
+
+
 Install Firebase CLI (only once):
 ```npm install -g firebase-tools```
 
@@ -299,6 +301,7 @@ helped you. Please consider donating so I will be motivated to continue improvin
 Gcash #: 0938-348-3562
 
 Thank you for your support!
+
 
 
 
