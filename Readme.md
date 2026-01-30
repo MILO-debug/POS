@@ -42,6 +42,11 @@ You **do NOT** need:
 ✖️ your own server  
 
 ---
+# 📽️ Guide/Tutorial Video:
+
+[![Watch the video tutorial](https://img.youtube.com/vi/VIDEO_ID/maxresdefault.jpg)](https://youtu.be/48baQlpyoyA)
+
+---
 
 # 🔥 Step 1 — Create Firebase project
 
@@ -301,6 +306,7 @@ helped you. Please consider donating so I will be motivated to continue improvin
 Gcash #: 0938-348-3562
 
 Thank you for your support!
+
 
 
 
